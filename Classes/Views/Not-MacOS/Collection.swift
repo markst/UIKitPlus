@@ -213,6 +213,19 @@ public class UCollection: UView, UICollectionViewDataSource {
         self.collectionView.delegate = delegate
         return self
     }
+
+    // MARK: Dynamic sizing
+
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        if bounds.size != intrinsicContentSize {
+            self.invalidateIntrinsicContentSize()
+        }
+    }
+
+    public override var intrinsicContentSize: CGSize {
+        return collectionView.collectionViewLayout.collectionViewContentSize
+    }
 }
 
 extension UCollection: UICollectionViewDelegate {
