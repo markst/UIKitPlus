@@ -218,13 +218,32 @@ public class UCollection: UView, UICollectionViewDataSource {
 
     public override func layoutSubviews() {
         super.layoutSubviews()
-        if bounds.size != intrinsicContentSize {
-            self.invalidateIntrinsicContentSize()
+
+        if !__CGSizeEqualToSize(bounds.size, intrinsicContentSize) {
+            invalidateIntrinsicContentSize()
         }
+
+        collectionView.collectionViewLayout
+            .invalidateLayout()
     }
 
     public override var intrinsicContentSize: CGSize {
-        return collectionView.collectionViewLayout.collectionViewContentSize
+        collectionView.collectionViewLayout
+            .collectionViewContentSize
+    }
+
+    public override func systemLayoutSizeFitting(
+        _
+        targetSize: CGSize, withHorizontalFittingPriority
+        horizontalFittingPriority: UILayoutPriority,
+        verticalFittingPriority: UILayoutPriority
+    ) -> CGSize {
+        // Force a layout pass with the correct width.
+        frame = .init(origin: .zero, size: targetSize)
+        setNeedsLayout()
+        layoutIfNeeded()
+
+        return collectionView.contentSize
     }
 }
 
